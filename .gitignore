@@ -1,2 +1,5 @@
 # Ignorar archivos de docker
 docker/.env
+
+# Ignorar archivos de configuración del server
+edgar_server/.env

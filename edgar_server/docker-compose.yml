@@ -1,0 +1,7 @@
+services:
+  fastapi_microservice:
+    build: .
+    container_name: fastapi_microservice
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    restart: always
