@@ -9,5 +9,40 @@ GET http://127.0.0.1:8000/hello/User
 Accept: application/json
 
 ###
+###
+GET http://localhost:705/users/all
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjODczZmQxLWJiNDUtNDJhZC04YTJhLTk2YjdmNzFjMjljYSIsInVzZXJuYW1lIjoiU2ViYXN0aWFuIiwiZW1haWwiOiJzZWJhc0Bob3RtYWlsLmNvbSIsInJvbGVfaWQiOiIzY2I3Mzg0ZS1iMmY0LTQ1NTYtODhlNy0wNmUyN2UwN2ZhMTciLCJleHAiOjE3NDQ4NjMwMzJ9.WNDrkyqoleMiRrCYSXLzO1E4ubh9bLhWYfcPt9s910U
 
-GET http://localhost:705
+###
+
+###
+
+POST http://localhost:705/users/
+Content-Type: application/json
+
+{
+  "username": "Sebastian",
+  "email": "juan@hotmail.com",
+  "password": "12345"
+}
+
+###
+
+###
+POST localhost:705/auth/login
+Content-Type: application/json
+
+{
+  "email": "sebas@hotmail.com",
+  "password": "12345"
+}
+
+###
+
+###
+
+GET http://kysedomi.lat:705/hello/sebitas
+
+
+###
