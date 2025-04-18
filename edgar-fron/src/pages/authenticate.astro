@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LoginForm from '../components/react_components/LoginForm';
+import RegisterForm from '../components/react_components/RegisterForm';
+---
+
+<Layout>
+	<div class="container">
+		<header>
+			<h1>Sistema de Consultorio Médico</h1>
+			<p>Bienvenido a nuestro portal de acceso</p>
+		</header>
+
+		<div class="form-container">
+			<div class="tabs">
+				<button id="login-tab" class="tab active">Iniciar Sesión</button>
+				<button id="register-tab" class="tab">Registrarse</button>
+			</div>
+
+			<div id="login-form" class="form-panel active">
+				<LoginForm client:load />
+			</div>
+
+			<div id="register-form" class="form-panel">
+				<RegisterForm client:load />
+			</div>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.container {
+		max-width: 500px;
+		margin: 50px auto;
+		padding: 20px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+	}
+
+	header {
+		text-align: center;
+		margin-bottom: 30px;
+	}
+
+	h1 {
+		color: #1e3a8a;
+		margin-bottom: 10px;
+	}
+
+	.tabs {
+		display: flex;
+		border-bottom: 1px solid #e5e7eb;
+		margin-bottom: 20px;
+	}
+
+	.tab {
+		padding: 10px 20px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-size: 16px;
+		color: #6b7280;
+	}
+
+	.tab.active {
+		color: #3b82f6;
+		border-bottom: 2px solid #3b82f6;
+	}
+
+	.form-panel {
+		display: none;
+		padding: 20px 0;
+	}
+
+	.form-panel.active {
+		display: block;
+	}
+</style>
+
+<script>
+	// Script para manejar las pestañas
+	document.addEventListener('DOMContentLoaded', () => {
+		const loginTab = document.getElementById('login-tab');
+		const registerTab = document.getElementById('register-tab');
+		const loginForm = document.getElementById('login-form');
+		const registerForm = document.getElementById('register-form');
+
+		loginTab.addEventListener('click', () => {
+			loginTab.classList.add('active');
+			registerTab.classList.remove('active');
+			loginForm.classList.add('active');
+			registerForm.classList.remove('active');
+		});
+
+		registerTab.addEventListener('click', () => {
+			registerTab.classList.add('active');
+			loginTab.classList.remove('active');
+			registerForm.classList.add('active');
+			loginForm.classList.remove('active');
+		});
+	});
+</script>
