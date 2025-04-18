@@ -1,5 +1,6 @@
 from typing import Type
 
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 from ..db.models import User
 
@@ -12,19 +13,58 @@ class UserRepository:
         """
         Get a user by their email.
         """
-        db_user = self.session.exec(select(User).where(User.email == email)).first()
+        db_user = self.session.exec(select(User).where(User.email == email).where(User.is_deleted == False)).first()
         return db_user
 
     def get_all_users(self):
-        db_user = self.session.exec(select(User)).all()
+        db_user = self.session.exec(select(User).where(User.is_deleted == False)).all()
         return db_user
 
     def get_user_by_id(self, user_id):
-        db_user = self.session.get(User, user_id)
-        return db_user
+        statement = select(User).where(User.id == user_id).where(User.is_deleted == False)
+        result = self.session.exec(statement).first()
+        return result
 
     def create_user(self, user: User):
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
         return user
+
+    def get_user_quotes(self, user_id: str):
+        """
+        Get all quotes for a user.
+        """
+        statement = (
+            select(User)
+            .where(User.id == user_id)
+            .where(User.is_deleted == False)
+            .options(selectinload(User.quotes))
+        )
+        result = self.session.exec(statement)
+        return result.first()
+
+    def update_user(self, user: User):
+        """
+        Update a user.
+        """
+        db_user = self.session.exec(select(User).where(User.id == user.id)).first()
+        if not db_user:
+            return None
+        db_user.username = user.username
+        db_user.email = user.email
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user
+
+    def delete_user(self, user_id: str):
+        """
+        Delete a user.
+        """
+        db_user = self.session.exec(select(User).where(User.id == user_id)).first()
+        if not db_user:
+            return None
+        db_user.is_deleted = True
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user

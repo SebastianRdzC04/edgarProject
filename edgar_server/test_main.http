@@ -41,6 +41,32 @@ Content-Type: application/json
 ###
 
 ###
+GET localhost:8000/users/bc873fd1-bb45-42ad-8a2a-96b7f71c29ca
+
+
+###
+
+###
+GET localhost:8000/users/quotes/bc873fd1-bb45-42ad-8a2a-96b7f71c29ca
+###
+
+###
+GET localhost:8000/materials/
+###
+
+###
+POST localhost:8000/materials/
+Content-Type: application/json
+
+{
+  "name": "Material 1",
+  "description": "Description of Material 1"
+}
+###
+
+
+
+###
 
 GET http://kysedomi.lat:705/hello/sebitas
 
