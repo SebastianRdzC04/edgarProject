@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:postgresql://kysedomi.lat:702/postgres</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="postgres@localhost [2]" uuid="728759f5-c734-412b-8aed-5758771e93be">
+    <data-source source="LOCAL" name="postgres@localhost" uuid="d836dab5-a18d-4236-814a-bd706db9f8fd">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

@@ -44,7 +44,7 @@ export default function LoginForm() {
         setIsLoading(true)
 
         try {
-            const response = await fetch("https://api.consultorio.com/login", {
+            const response = await fetch("http://localhost:705/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export default function LoginForm() {
 
             localStorage.setItem("token", data.token)
             showNotification("success", "Bienvenido al sistema del consultorio médico")
-            // window.location.href = "/dashboard"
+            window.location.href = "/"
         } catch (error: any) {
             showNotification("error", error.message || "Ocurrió un error al iniciar sesión")
         } finally {
