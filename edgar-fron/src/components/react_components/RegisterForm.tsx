@@ -45,7 +45,7 @@ export default function RegisterForm() {
         setIsLoading(true)
 
         try {
-            const response = await fetch("http://localhost:705/auth/register", {
+            const response = await fetch("http://fastapi-microservice:705/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

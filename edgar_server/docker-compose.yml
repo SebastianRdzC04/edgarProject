@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  fastapi_microservice:
+  fastapi-microservice:
     build: .
-    container_name: fastapi_microservice
+    container_name: fastapi-microservice
     ports:
       - "${API_PORT}:${API_PORT}"
     env_file:
