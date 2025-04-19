@@ -37,7 +37,7 @@ services:
     volumes:
       - ../front-end/dist:/usr/share/nginx/html
     depends_on:
-      - fastapi_microservice
+      - fastapi-microservice
 
 volumes:
   postgres_data:
