@@ -1,0 +1,1 @@
+import{g as n}from"./auth.DAnXSDgQ.js";document.addEventListener("DOMContentLoaded",()=>{const e=localStorage.getItem("token");e||(window.location.href="/authenticate");const t=n(e||""),o=document.getElementById("prueba");o?o.innerText=`ID de usuario: ${t}`:console.error('Elemento con ID "prueba" no encontrado')});

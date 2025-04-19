@@ -28,5 +28,16 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ../docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  nginx:
+    image: nginx:latest
+    container_name: nginx-frontend
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ../front-end/dist:/usr/share/nginx/html
+    depends_on:
+      - fastapi_microservice
+
 volumes:
   postgres_data:
