@@ -10,11 +10,11 @@
     "deploy": "cp -r ./dist/ ../front-end/"
   },
   "dependencies": {
-    "@astrojs/react": "^4.2.4",
+    "@astrojs/react": "^4.2.5",
     "@tailwindcss/vite": "^4.1.4",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "astro": "^5.7.2",
+    "astro": "^5.7.7",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.488.0",
     "react": "^19.1.0",

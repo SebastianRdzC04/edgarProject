@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
-  fastapi-microservice:
+  fastapi-microservice-edgar:
     build: .
-    container_name: fastapi-microservice
+    container_name: fastapi-microservice-edgar
     ports:
       - "${API_PORT}:${API_PORT}"
     env_file:
@@ -12,11 +10,11 @@ services:
     volumes:
       - ./:/edgar_server
     depends_on:
-      - postgres
+      - postgres-edgar
 
-  postgres:
+  postgres-edgar:
     image: postgres:latest
-    container_name: postgres-database
+    container_name: postgres-database-edgar
     restart: always
     environment:
       POSTGRES_USER: ${DATABASE_USER}
@@ -28,16 +26,16 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ../docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  nginx:
+  nginx-edgar:
     image: nginx:latest
-    container_name: nginx-frontend
+    container_name: nginx-frontend-edgar
     restart: always
     ports:
-      - "80:80"
+      - "806:80"
     volumes:
-      - ../front-end/dist:/usr/share/nginx/html
+      - ../edgar-fron/dist:/usr/share/nginx/html
     depends_on:
-      - fastapi-microservice
+      - fastapi-microservice-edgar
 
 volumes:
   postgres_data:
