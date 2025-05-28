@@ -1,0 +1,116 @@
+---
+// HeaderPublic.astro
+---
+
+<header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
+    <div class="container mx-auto px-6 lg:px-12 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <span class="font-bold text-xl text-gray-800">R I C A S A </span>
+            </div>
+            <nav class="flex items-center">
+                
+                
+                <!-- Botón de inicio de sesión (visible por defecto) -->
+                <div id="login-button" class="block">
+                    <a href="/authenticate" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
+                        Iniciar Sesión
+                    </a>
+                </div>
+                
+                <!-- Dropdown de usuario (oculto por defecto) -->
+                <div id="user-dropdown" class="relative hidden">
+                    <button id="dropdown-button" class="flex items-center space-x-2 text-gray-800 hover:text-blue-600 focus:outline-none">
+                        <span class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span id="user-initial" class="font-medium text-blue-600">U</span>
+                        </span>
+                        <span id="username-display" class="font-medium">Usuario</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
+                        <a href="/dashboard" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                            Dashboard
+                        </a>
+                        <button id="logout-button" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-50">
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<script>
+    // Verificar el estado de autenticación al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginButton = document.getElementById('login-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        const dropdownButton = document.getElementById('dropdown-button');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const usernameDisplay = document.getElementById('username-display');
+        const userInitial = document.getElementById('user-initial');
+        const logoutButton = document.getElementById('logout-button');
+        
+        // Función para verificar si el usuario está autenticado
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            const userData = localStorage.getItem('userData');
+            
+            if (token && userData) {
+                try {
+                    // Mostrar dropdown de usuario
+                    loginButton.classList.add('hidden');
+                    userDropdown.classList.remove('hidden');
+                    
+                    // Actualizar la información del usuario
+                    const user = JSON.parse(userData);
+                    if (user && user.name) {
+                        usernameDisplay.textContent = user.name;
+                        userInitial.textContent = user.name.charAt(0).toUpperCase();
+                    }
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    resetAuthState();
+                }
+            } else {
+                resetAuthState();
+            }
+        }
+        
+        // Reiniciar el estado de autenticación
+        function resetAuthState() {
+            loginButton.classList.remove('hidden');
+            userDropdown.classList.add('hidden');
+        }
+        
+        // Manejar el cierre de sesión
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userData');
+                resetAuthState();
+            });
+        }
+        
+        // Manejar el dropdown
+        if (dropdownButton && dropdownMenu) {
+            dropdownButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+            });
+            
+            // Cerrar dropdown al hacer clic fuera
+            document.addEventListener('click', (event) => {
+                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Verificar estado de autenticación al cargar
+        checkAuthStatus();
+    });
+</script>
