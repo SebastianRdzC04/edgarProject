@@ -45,7 +45,7 @@ export default function RegisterForm() {
         setIsLoading(true)
 
         try {
-            const response = await fetch("http://kysedomi.lat:705/auth/register", {
+            const response = await fetch("https://apiedgar.kysedomi.lat/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

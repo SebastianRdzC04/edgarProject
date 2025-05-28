@@ -44,7 +44,7 @@ export default function LoginForm() {
         setIsLoading(true)
 
         try {
-            const response = await fetch("http://kysedomi.lat:705/auth/login", {
+            const response = await fetch("https://apiedgar.kysedomi.lat/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
