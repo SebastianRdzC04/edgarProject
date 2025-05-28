@@ -60,7 +60,7 @@ export default function LoginForm() {
 
             localStorage.setItem("token", data.token)
             showNotification("success", "Bienvenido al sistema del consultorio médico")
-            window.location.href = "/"
+            window.location.href = "/home"
         } catch (error: any) {
             showNotification("error", error.message || "Ocurrió un error al iniciar sesión")
         } finally {

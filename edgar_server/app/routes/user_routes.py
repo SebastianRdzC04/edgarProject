@@ -20,7 +20,6 @@ def get_all_users(service: UserService = Depends(get_user_service),
     """
     Get all users.
     """
-    verify_role(current_user["role_id"], "user", role_repository)
     return service.get_all_users()
 
 @router.post("/", response_model=UserOut)
