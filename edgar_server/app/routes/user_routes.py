@@ -15,7 +15,6 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/all", response_model=List[UserOut])
 def get_all_users(service: UserService = Depends(get_user_service),
-                  current_user: UserWithRol = Depends(get_current_user),
                   role_repository: RoleRepository = Depends(get_role_repository)):
     """
     Get all users.
