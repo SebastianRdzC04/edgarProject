@@ -70,6 +70,7 @@
                 // Verificar si el token ha expirado
                 const currentTime = Math.floor(Date.now() / 1000);
                 if (payload.exp && payload.exp < currentTime) {
+                    localStorage.removeItem('token'); // Eliminar token expirado
                     throw new Error('Token expired');
                 }
                 

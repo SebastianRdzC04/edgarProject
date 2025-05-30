@@ -1,0 +1,11 @@
+---
+import LayoutDashboard from "../layouts/LayoutDashboard.astro";
+import UserTable from "../components/react_components/UserTable";
+---
+
+<LayoutDashboard title="RICASA | Clientes">
+    <div class="container mx-auto px-4">
+        <UserTable client:load />
+    </div>
+</LayoutDashboard>
+
