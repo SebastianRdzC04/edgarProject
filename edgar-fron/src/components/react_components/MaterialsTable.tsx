@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import FormMaterial from './FormMaterial';
 
 interface Material {
   id: string;
@@ -10,25 +11,43 @@ const MaterialsTable: React.FC = () => {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [successAlert, setSuccessAlert] = useState<boolean>(false);
+
+  const fetchMaterials = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('https://apiedgar.kysedomi.lat/materials/');
+      if (!response.ok) {
+        throw new Error('Failed to fetch materials');
+      }
+      const data = await response.json();
+      setMaterials(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchMaterials = async () => {
-      try {
-        const response = await fetch('https://apiedgar.kysedomi.lat/materials/');
-        if (!response.ok) {
-          throw new Error('Failed to fetch materials');
-        }
-        const data = await response.json();
-        setMaterials(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchMaterials();
   }, []);
+
+  const showSuccessAlert = () => {
+    setSuccessAlert(true);
+    setTimeout(() => {
+      setSuccessAlert(false);
+    }, 3000); // Hide after 3 seconds
+  };
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+  const handleMaterialCreated = () => {
+    fetchMaterials().then(() => {
+      showSuccessAlert();
+    });
+  };
 
   if (loading) {
     return (
@@ -55,6 +74,27 @@ const MaterialsTable: React.FC = () => {
 
   return (
     <div className="overflow-hidden bg-white shadow-md rounded-xl w-full">
+      {successAlert && (
+        <div className="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 shadow-md rounded z-50 animate-fadeIn">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <p className="font-medium">¡Material creado y lista actualizada con éxito!</p>
+          </div>
+        </div>
+      )}
+
+      <style >{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-in-out;
+        }
+      `}</style>
+
       <div className="p-6 border-b border-gray-200 bg-gray-800 text-white flex justify-between">
         <div>
           <h3 className="text-2xl font-bold">
@@ -63,7 +103,10 @@ const MaterialsTable: React.FC = () => {
           <p className="mt-2 text-gray-300">Lista completa de materiales para construcción.</p>
         </div>
         <div>
-          <button className="px-4 py-2 bg-blue-300 text-black font-bold rounded-lg hover:bg-blue-400 transition duration-300 flex items-center shadow-sm">
+          <button 
+            onClick={handleOpenModal}
+            className="px-4 py-2 bg-blue-300 text-black font-bold rounded-lg hover:bg-blue-400 transition duration-300 flex items-center shadow-sm"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
@@ -134,6 +177,13 @@ const MaterialsTable: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Material Form Modal */}
+      <FormMaterial 
+        isOpen={isModalOpen} 
+        onClose={handleCloseModal} 
+        onSuccess={handleMaterialCreated} 
+      />
     </div>
   );
 };

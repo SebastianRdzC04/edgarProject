@@ -3,3 +3,5 @@ docker/.env
 
 # Ignorar archivos de configuración del server
 edgar_server/.env
+
+edgar_server/venv/

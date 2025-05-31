@@ -18,7 +18,7 @@ class QuoteService:
             title=quote_create.title,
             text=quote_create.text,
             address=quote_create.address,
-            status=quote_create.status,
+            status='pendiente',  # Default status
             price=quote_create.price,
             user_id=quote_create.user_id
         )
