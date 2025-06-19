@@ -11,23 +11,5 @@ import LayoutDashboard from "../layouts/LayoutDashboard.astro";
 
 
 <script>
-    // Este código se ejecuta en el navegador
-    import {getUserIdFromToken} from "../lib/auth";
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-
-
-        if (!token) {
-            // Si no hay token, redirigir a la página de autenticación
-            window.location.href = '/authenticate';
-        }
-        const user_id = getUserIdFromToken(token || '');
-        const user_id_element = document.getElementById('prueba');
-        if (user_id_element) {
-            user_id_element.innerText = `ID de usuario: ${user_id}`;
-        } else {
-            console.error('Elemento con ID "prueba" no encontrado');
-        }
-    });
+    
 </script>

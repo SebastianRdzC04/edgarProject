@@ -46,6 +46,7 @@ export default function LoginForm() {
         try {
             const response = await fetch("https://apiedgar.kysedomi.lat/auth/login", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -58,8 +59,6 @@ export default function LoginForm() {
                 throw new Error(data.message || "Error al iniciar sesión")
             }
 
-            localStorage.setItem("token", data.token)
-            showNotification("success", "Bienvenido al sistema del consultorio médico")
             window.location.href = "/"
         } catch (error: any) {
             showNotification("error", error.message || "Ocurrió un error al iniciar sesión")
