@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Response, Cookie
 
 from passlib.context import CryptContext
 
@@ -31,7 +31,7 @@ class AuthService:
         created_user = self.user_repository.create_user(user)
         return UserOut.model_validate(created_user)
 
-    def login(self, login_request: LoginRequest) -> AuthResponse:
+    def login(self,response:Response, login_request: LoginRequest) -> AuthResponse:
         user = self.user_repository.get_user_by_email(login_request.email)
         if not user or not pwd_context.verify(login_request.password, user.password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -45,4 +45,16 @@ class AuthService:
         }
 
         access_token = create_access_token(data=jwt_payload)
-        return AuthResponse(token=access_token)
+        # Set the access token as a cookie in the response
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,  # Prevents JavaScript access to the cookie
+            secure=False,   # Use secure cookies in production
+        )
+        return AuthResponse(message="Login successful")
+    
+    def logout(self, response: Response) -> AuthResponse:
+        # Clear the access token cookie
+        response.delete_cookie("access_token")
+        return AuthResponse(message="Logout successful")

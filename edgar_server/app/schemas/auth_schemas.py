@@ -6,4 +6,4 @@ class LoginRequest(BaseModel):
     password: str
 
 class AuthResponse(BaseModel):
-    token: str
+    message: str

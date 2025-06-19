@@ -12,6 +12,9 @@ class UserService:
     def __init__(self, user_repository):
         self.user_repository = user_repository
 
+
+    
+
     def get_user_by_id(self, user_id)-> UserOut:
         user = self.user_repository.get_user_by_id(user_id)
         if not user:
