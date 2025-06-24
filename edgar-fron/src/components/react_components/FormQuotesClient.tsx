@@ -13,16 +13,17 @@ interface SelectedMaterial {
   name: string; // For display purposes
 }
 
-type Props = {  apiUrl?: string;
+type Props = {
+  apiUrl?: string; 
 }
 
-export default function FormQuotes({ apiUrl }: Props) {
+export default function FormQuotesClient({ apiUrl }: Props) {
   // Quote form fields
   const [title, setTitle] = useState("")
   const [text, setText] = useState("")
   const [address, setAddress] = useState("")
-  const [price, setPrice] = useState<number>(0)
-  const [userId, setUserId] = useState("")
+  // Price is always 0
+  const [price] = useState<number>(0)
   
   // Materials management
   const [materials, setMaterials] = useState<Material[]>([])
@@ -32,7 +33,6 @@ export default function FormQuotes({ apiUrl }: Props) {
   // Form state
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState({ show: false, type: "", message: "" })
-  const [users, setUsers] = useState<{id: string, username: string}[]>([])
 
   useEffect(() => {
     // Fetch available materials
@@ -51,27 +51,7 @@ export default function FormQuotes({ apiUrl }: Props) {
       }
     };
 
-    // Fetch available users
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/users/all`, {
-          credentials: "include",
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch users');
-        }
-        const data = await response.json();
-        setUsers(data);
-        if (data.length > 0) {
-          setUserId(data[0].id);
-        }
-      } catch (error) {
-        showNotification("error", "Error al cargar usuarios");
-      }
-    };
-
     fetchMaterials();
-    fetchUsers();
   }, []);
 
   // Notification styles
@@ -132,39 +112,30 @@ export default function FormQuotes({ apiUrl }: Props) {
     setIsLoading(true);
 
     try {
-      // Step 1: Create the quote - WITHOUT the status field
-      const quoteResponse = await fetch(`${apiUrl}/quotes/`, {
+      // Use the quote endpoint that doesn't require a user ID
+      const response = await fetch(`${apiUrl}/quotes/create-without-user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: "include", // Include cookies for session management
         body: JSON.stringify({
           title,
           text,
           address,
-          price: Number(price),
-          user_id: userId
-          // Don't include status field at all since it's not in the QuoteCreate model
+          price: 0 // Price is always 0
         }),
       });
 
-      console.log("Quote payload:", {
-        title,
-        text,
-        address,
-        price: Number(price),
-        user_id: userId
-      });
-
-      if (!quoteResponse.ok) {
-        const errorData = await quoteResponse.json();
+      if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(errorData.message || "Error al crear la cotización");
       }
 
-      const quoteData = await quoteResponse.json();
+      const quoteData = await response.json();
       const quoteId = quoteData.id;
 
-      // Step 2: Add materials to the quote
+      // Step 2: Add materials to the quote if needed
       if (selectedMaterials.length > 0) {
         for (const material of selectedMaterials) {
           const materialResponse = await fetch(`${apiUrl}/quote-materials/`, {
@@ -186,11 +157,11 @@ export default function FormQuotes({ apiUrl }: Props) {
         }
       }
 
-      showNotification("success", "Cotización creada exitosamente");
+      showNotification("success", "Cotización enviada exitosamente. Nos pondremos en contacto contigo pronto.");
       resetForm();
       
     } catch (error: any) {
-      showNotification("error", error.message || "Ocurrió un error al crear la cotización");
+      showNotification("error", error.message || "Ocurrió un error al enviar la cotización");
       console.error("Error details:", error);
     } finally {
       setIsLoading(false);
@@ -201,7 +172,6 @@ export default function FormQuotes({ apiUrl }: Props) {
     setTitle("");
     setText("");
     setAddress("");
-    setPrice(0);
     setSelectedMaterials([]);
   };
 
@@ -209,9 +179,9 @@ export default function FormQuotes({ apiUrl }: Props) {
     <div className="bg-white shadow-md rounded-xl w-full">
       <div className="p-6 border-b border-gray-200 bg-gray-800 text-white">
         <h3 className="text-2xl font-bold">
-          Crear <span className="text-blue-300">Cotización</span>
+          Solicitar <span className="text-blue-300">Cotización</span>
         </h3>
-        <p className="mt-2 text-gray-300">Complete el formulario para crear una nueva cotización.</p>
+        <p className="mt-2 text-gray-300">Complete el formulario para solicitar una cotización.</p>
       </div>
 
       {/* Keyframes para la animación */}
@@ -236,7 +206,7 @@ export default function FormQuotes({ apiUrl }: Props) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* General Information Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="title" className="text-sm font-medium text-gray-700">Título de la Cotización</label>
               <input
@@ -248,22 +218,6 @@ export default function FormQuotes({ apiUrl }: Props) {
                 required
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <label htmlFor="userId" className="text-sm font-medium text-gray-700">Cliente</label>
-              <select
-                id="userId"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                required
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Seleccione un cliente</option>
-                {users.map(user => (
-                  <option key={user.id} value={user.id}>{user.username}</option>
-                ))}
-              </select>
             </div>
           </div>
 
@@ -281,28 +235,14 @@ export default function FormQuotes({ apiUrl }: Props) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="text" className="text-sm font-medium text-gray-700">Descripción de la Cotización</label>
+            <label htmlFor="text" className="text-sm font-medium text-gray-700">Descripción de la Solicitud</label>
             <textarea
               id="text"
-              placeholder="Descripción detallada del trabajo a realizar"
+              placeholder="Descripción detallada del trabajo que necesita"
               value={text}
               onChange={(e) => setText(e.target.value)}
               required
               rows={4}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="price" className="text-sm font-medium text-gray-700">Precio Estimado (MXN)</label>
-            <input
-              id="price"
-              type="number"
-              min="0"
-              step="0.01"
-              value={price}
-              onChange={(e) => setPrice(parseFloat(e.target.value))}
-              required
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -378,10 +318,10 @@ export default function FormQuotes({ apiUrl }: Props) {
                 <span style={spinnerStyles as React.CSSProperties}>
                   ◌
                 </span>
-                Guardando...
+                Enviando...
               </span>
             ) : (
-              "Crear Cotización"
+              "Solicitar Cotización"
             )}
           </button>
         </form>

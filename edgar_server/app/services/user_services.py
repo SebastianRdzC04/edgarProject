@@ -9,8 +9,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class UserService:
-    def __init__(self, user_repository):
+    def __init__(self, user_repository, role_repository):
         self.user_repository = user_repository
+        self.role_repository = role_repository
 
 
     
@@ -73,4 +74,22 @@ class UserService:
         if not db_user:
             raise HTTPException(status_code=404, detail="User not found")
         return UserOut.model_validate(db_user)
+    
+    def convert_user_to_admin(self, user_id: str) -> UserOut:
+        """
+        Convert a user to an admin.
+        """
+        db_user = self.user_repository.get_user_by_id(user_id)
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        role = self.role_repository.get_role_by_name("admin")
+        if not role:
+            raise HTTPException(status_code=404, detail="Admin role not found")
+
+        db_user.role_id = role.id
+        updated_user = self.user_repository.convert_user_to_admin(user_id, role.id)
+        if not updated_user:
+            raise HTTPException(status_code=400, detail="Failed to convert user to admin")
+        return UserOut.model_validate(updated_user)
 

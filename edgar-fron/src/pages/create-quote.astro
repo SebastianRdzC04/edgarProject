@@ -1,0 +1,14 @@
+---
+import LayoutPublic from "../layouts/LayoutPublic.astro";
+import FormQuoteAdmin from "../components/react_components/FormQuoteAdmin.tsx";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+
+---
+
+<LayoutPublic title="Create Quote">
+    <div class="container mx-auto px-4 py-6">
+        <FormQuoteAdmin apiUrl={apiUrl} client:load />
+    </div>
+</LayoutPublic>

@@ -13,16 +13,21 @@ interface SelectedMaterial {
   name: string; // For display purposes
 }
 
-type Props = {  apiUrl?: string;
+type Props = {
+  apiUrl?: string;
 }
 
-export default function FormQuotes({ apiUrl }: Props) {
+export default function FormQuoteAdmin({ apiUrl }: Props) {
   // Quote form fields
   const [title, setTitle] = useState("")
   const [text, setText] = useState("")
   const [address, setAddress] = useState("")
-  const [price, setPrice] = useState<number>(0)
-  const [userId, setUserId] = useState("")
+  // Price is always 0, but keeping the state for consistency with the API
+  const [price] = useState<number>(0)
+  
+  // Client information
+  const [clientName, setClientName] = useState("")
+  const [clientEmail, setClientEmail] = useState("")
   
   // Materials management
   const [materials, setMaterials] = useState<Material[]>([])
@@ -32,7 +37,6 @@ export default function FormQuotes({ apiUrl }: Props) {
   // Form state
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState({ show: false, type: "", message: "" })
-  const [users, setUsers] = useState<{id: string, username: string}[]>([])
 
   useEffect(() => {
     // Fetch available materials
@@ -51,27 +55,7 @@ export default function FormQuotes({ apiUrl }: Props) {
       }
     };
 
-    // Fetch available users
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/users/all`, {
-          credentials: "include",
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch users');
-        }
-        const data = await response.json();
-        setUsers(data);
-        if (data.length > 0) {
-          setUserId(data[0].id);
-        }
-      } catch (error) {
-        showNotification("error", "Error al cargar usuarios");
-      }
-    };
-
     fetchMaterials();
-    fetchUsers();
   }, []);
 
   // Notification styles
@@ -132,8 +116,8 @@ export default function FormQuotes({ apiUrl }: Props) {
     setIsLoading(true);
 
     try {
-      // Step 1: Create the quote - WITHOUT the status field
-      const quoteResponse = await fetch(`${apiUrl}/quotes/`, {
+      // Use the new combined endpoint to create user and quote together
+      const response = await fetch(`${apiUrl}/quotes/create-with-user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -142,29 +126,21 @@ export default function FormQuotes({ apiUrl }: Props) {
           title,
           text,
           address,
-          price: Number(price),
-          user_id: userId
-          // Don't include status field at all since it's not in the QuoteCreate model
+          price: 0, // Price is always 0
+          username: clientName,
+          email: clientEmail
         }),
       });
 
-      console.log("Quote payload:", {
-        title,
-        text,
-        address,
-        price: Number(price),
-        user_id: userId
-      });
-
-      if (!quoteResponse.ok) {
-        const errorData = await quoteResponse.json();
+      if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(errorData.message || "Error al crear la cotización");
       }
 
-      const quoteData = await quoteResponse.json();
+      const quoteData = await response.json();
       const quoteId = quoteData.id;
 
-      // Step 2: Add materials to the quote
+      // Step 2: Add materials to the quote if needed
       if (selectedMaterials.length > 0) {
         for (const material of selectedMaterials) {
           const materialResponse = await fetch(`${apiUrl}/quote-materials/`, {
@@ -201,8 +177,10 @@ export default function FormQuotes({ apiUrl }: Props) {
     setTitle("");
     setText("");
     setAddress("");
-    setPrice(0);
+    // Removed price reset since it's always 0
     setSelectedMaterials([]);
+    setClientName("");
+    setClientEmail("");
   };
 
   return (
@@ -235,8 +213,40 @@ export default function FormQuotes({ apiUrl }: Props) {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          {/* Client Information Section */}
+          <div className="border-b border-gray-200 pb-6">
+            <h4 className="text-lg font-medium text-gray-800 mb-4">Información del Cliente</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="clientName" className="text-sm font-medium text-gray-700">Nombre del Cliente</label>
+                <input
+                  id="clientName"
+                  type="text"
+                  placeholder="Nombre completo"
+                  value={clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  required
+                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                <label htmlFor="clientEmail" className="text-sm font-medium text-gray-700">Correo Electrónico</label>
+                <input
+                  id="clientEmail"
+                  type="email"
+                  placeholder="ejemplo@correo.com"
+                  value={clientEmail}
+                  onChange={(e) => setClientEmail(e.target.value)}
+                  required
+                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* General Information Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="title" className="text-sm font-medium text-gray-700">Título de la Cotización</label>
               <input
@@ -248,22 +258,6 @@ export default function FormQuotes({ apiUrl }: Props) {
                 required
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <label htmlFor="userId" className="text-sm font-medium text-gray-700">Cliente</label>
-              <select
-                id="userId"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                required
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Seleccione un cliente</option>
-                {users.map(user => (
-                  <option key={user.id} value={user.id}>{user.username}</option>
-                ))}
-              </select>
             </div>
           </div>
 
@@ -289,20 +283,6 @@ export default function FormQuotes({ apiUrl }: Props) {
               onChange={(e) => setText(e.target.value)}
               required
               rows={4}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="price" className="text-sm font-medium text-gray-700">Precio Estimado (MXN)</label>
-            <input
-              id="price"
-              type="number"
-              min="0"
-              step="0.01"
-              value={price}
-              onChange={(e) => setPrice(parseFloat(e.target.value))}
-              required
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -389,3 +369,5 @@ export default function FormQuotes({ apiUrl }: Props) {
     </div>
   );
 }
+      
+      

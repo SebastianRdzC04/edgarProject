@@ -7,7 +7,10 @@ interface Material {
   description: string;
 }
 
-const MaterialsTable: React.FC = () => {
+type Props = {  apiUrl?: string;
+};
+
+const MaterialsTable: React.FC<Props> = ({ apiUrl }) => {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +20,7 @@ const MaterialsTable: React.FC = () => {
   const fetchMaterials = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://apiedgar.kysedomi.lat/materials/');
+      const response = await fetch(`${apiUrl}/materials/`);
       if (!response.ok) {
         throw new Error('Failed to fetch materials');
       }

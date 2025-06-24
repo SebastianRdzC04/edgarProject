@@ -1,6 +1,8 @@
 ---
 import LayoutPublic from "../layouts/LayoutPublic.astro";
 import { Image } from "astro:assets";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <LayoutPublic title="Concretos | Inicio">
@@ -15,7 +17,7 @@ import { Image } from "astro:assets";
                     Ofrecemos el mejor concreto del país con calidad certificada. Haz tu cotización en cualquier momento y construyamos juntos el futuro.
                 </p>
                 <div class="flex flex-wrap gap-4 pt-4">
-                    <a href="authenticate" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg">
+                    <a href="create-quote" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg">
                         Cotizar ahora
                     </a>
                     <button class="px-6 py-3 border border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition duration-300">
@@ -159,4 +161,34 @@ import { Image } from "astro:assets";
             </div>
         </div>
     </section>
+
+    <!-- Authentication Check Script -->
+    <script define:vars={{apiUrl}}>
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch(`${apiUrl}/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include' // Important to include cookies for authentication
+                });
+                
+                const redirectButtons = document.querySelectorAll('a[href="create-quote"]');
+                
+                if (response.ok) {
+                    // User is logged in, update links to go to create-quote-client
+                    redirectButtons.forEach(button => {
+                        button.setAttribute('href', 'create-quote-client');
+                    });
+                    console.log('User is logged in, links updated to create-quote-client');
+                } else {
+                    // User is not logged in, keep the default links to create-quote
+                    console.log('User is not logged in, keeping original links');
+                }
+            } catch (error) {
+                console.error('Error checking authentication status:', error);
+            }
+        });
+    </script>
 </LayoutPublic>

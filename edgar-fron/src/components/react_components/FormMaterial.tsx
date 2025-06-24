@@ -51,7 +51,7 @@ export default function FormMaterial({ isOpen, onClose, onSuccess }: FormMateria
 
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch("https://apiedgar.kysedomi.lat/materials/", {
+      const response = await fetch("http://localhost:8000/materials", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

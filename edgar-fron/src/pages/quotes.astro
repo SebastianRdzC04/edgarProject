@@ -1,10 +1,13 @@
 ---
 import LayoutDashboard from "../layouts/LayoutDashboard.astro";
 import QuotesTable from "../components/react_components/QuotesTable";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <LayoutDashboard title="RICASA | Cotizaciones">
     <div class="container mx-auto px-4">
-        <QuotesTable client:load />
+        <QuotesTable apiUrl={apiUrl} client:load />
     </div>
 </LayoutDashboard>
+

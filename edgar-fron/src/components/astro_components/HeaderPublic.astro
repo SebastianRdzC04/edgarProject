@@ -7,7 +7,9 @@ import UserDropdown from './UserDropdown.astro';
     <div class="container mx-auto px-6 lg:px-12 py-4">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <span class="font-bold text-xl text-gray-800">R I C A S A </span>
+                <a href="/">
+                    <span class="font-bold text-xl text-gray-800">R I C A S A </span>
+                </a>
             </div>
             <nav class="flex items-center">
                 <UserDropdown showDashboard={true} />
@@ -15,140 +17,7 @@ import UserDropdown from './UserDropdown.astro';
         </div>
     </div>
 </header>
-                        Iniciar Sesión
-                    </a>
-                </div>
-                
-                <!-- Dropdown de usuario (oculto por defecto) -->
-                <div id="user-dropdown" class="relative hidden">
-                    <button id="dropdown-button" class="flex items-center space-x-2 text-gray-800 hover:text-blue-600 focus:outline-none">
-                        <span class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span id="user-initial" class="font-medium text-blue-600">U</span>
-                        </span>
-                        <span id="username-display" class="font-medium">Usuario</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
-                        <a href="/home" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                            Dashboard
-                        </a>
-                        <button id="logout-button" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-50">
-                            Cerrar sesión
-                        </button>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-</header>
 
 <script>
-    // Verificar el estado de autenticación al cargar la página
-    document.addEventListener('DOMContentLoaded', () => {
-        const loginButton = document.getElementById('login-button');
-        const userDropdown = document.getElementById('user-dropdown');
-        const dropdownButton = document.getElementById('dropdown-button');
-        const dropdownMenu = document.getElementById('dropdown-menu');
-        const usernameDisplay = document.getElementById('username-display');
-        const userInitial = document.getElementById('user-initial');
-        const logoutButton = document.getElementById('logout-button');
-        
-        // Función para decodificar token JWT
-        function decodeJWT(token) {
-            try {
-                // El token tiene 3 partes: header.payload.signature
-                const parts = token.split('.');
-                if (parts.length !== 3) {
-                    throw new Error('Invalid token format');
-                }
-                
-                // Decodificar la parte del payload (segunda parte)
-                const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-                
-                // Verificar si el token ha expirado
-                const currentTime = Math.floor(Date.now() / 1000);
-                if (payload.exp && payload.exp < currentTime) {
-                    localStorage.removeItem('token'); // Eliminar token expirado
-                    throw new Error('Token expired');
-                }
-                
-                return payload;
-            } catch (error) {
-                console.error('Error decoding JWT:', error);
-                return null;
-            }
-        }
-        
-        // Función para verificar si el usuario está autenticado
-        function checkAuthStatus() {
-            const token = localStorage.getItem('token');
-            
-            if (token) {
-                // Decodificar el token para obtener información del usuario
-                const decodedToken = decodeJWT(token);
-                
-                if (decodedToken) {
-                    // Mostrar dropdown de usuario
-                    loginButton.classList.add('hidden');
-                    userDropdown.classList.remove('hidden');
-                    
-                    // Extraer datos específicos del token
-                    const userData = {
-                        id: decodedToken.id || '',
-                        username: decodedToken.username || 'Usuario',
-                        email: decodedToken.email || '',
-                        role_id: decodedToken.role_id || ''
-                    };
-                    
-                    // Actualizar la información del usuario desde el token
-                    usernameDisplay.textContent = userData.username;
-                    userInitial.textContent = userData.username.charAt(0).toUpperCase();
-                    
-                    // Opcional: guardar datos de usuario en localStorage para uso en otras páginas
-                    localStorage.setItem('userData', JSON.stringify(userData));
-                } else {
-                    // Token inválido o expirado
-                    resetAuthState();
-                }
-            } else {
-                resetAuthState();
-            }
-        }
-        
-        // Reiniciar el estado de autenticación
-        function resetAuthState() {
-            localStorage.removeItem('userData');
-            loginButton.classList.remove('hidden');
-            userDropdown.classList.add('hidden');
-        }
-        
-        // Manejar el cierre de sesión
-        if (logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                localStorage.removeItem('token');
-                resetAuthState();
-                window.location.href = '/'; // Redireccionar al inicio tras cerrar sesión
-            });
-        }
-        
-        // Manejar el dropdown
-        if (dropdownButton && dropdownMenu) {
-            dropdownButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('hidden');
-            });
-            
-            // Cerrar dropdown al hacer clic fuera
-            document.addEventListener('click', (event) => {
-                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                    dropdownMenu.classList.add('hidden');
-                }
-            });
-        }
-        
-        // Verificar estado de autenticación al cargar
-        checkAuthStatus();
-    });
+    
 </script>

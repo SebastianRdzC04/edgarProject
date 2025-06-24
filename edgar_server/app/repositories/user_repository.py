@@ -68,3 +68,15 @@ class UserRepository:
         self.session.commit()
         self.session.refresh(db_user)
         return db_user
+    
+    def convert_user_to_admin(self, user_id: str, role_id: str):
+        """
+        Convert a user to an admin.
+        """
+        db_user = self.session.exec(select(User).where(User.id == user_id)).first()
+        if not db_user:
+            return None
+        db_user.role_id = role_id
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user

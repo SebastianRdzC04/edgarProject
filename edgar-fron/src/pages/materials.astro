@@ -1,11 +1,13 @@
 ---
 import LayoutDashboard from "../layouts/LayoutDashboard.astro";
 import MaterialsTable from "../components/react_components/MaterialsTable";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <LayoutDashboard title="RICASA | Materiales">
     <div class="container mx-auto px-4">
-        <MaterialsTable client:load />
+        <MaterialsTable apiUrl={apiUrl} client:load />
     </div>
 </LayoutDashboard>
 

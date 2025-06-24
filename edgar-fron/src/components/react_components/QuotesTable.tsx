@@ -15,7 +15,10 @@ interface Quote {
   user: User;
 }
 
-const QuotesTable: React.FC = () => {
+type Props = {  apiUrl?: string;
+};
+
+const QuotesTable: React.FC<Props> = ({ apiUrl }) => {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +26,7 @@ const QuotesTable: React.FC = () => {
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
-        const response = await fetch('https://apiedgar.kysedomi.lat/quotes/all');
+        const response = await fetch(`${apiUrl}/quotes/all`);
         if (!response.ok) {
           throw new Error('Failed to fetch quotes');
         }

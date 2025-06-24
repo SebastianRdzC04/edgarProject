@@ -51,6 +51,7 @@ class AuthService:
             value=access_token,
             httponly=True,  # Prevents JavaScript access to the cookie
             secure=False,   # Use secure cookies in production
+            samesite="lax",  # Adjust as needed for your application
         )
         return AuthResponse(message="Login successful")
     

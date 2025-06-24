@@ -1,10 +1,12 @@
 ---
 import LayoutDashboard from "../layouts/LayoutDashboard.astro";
 import FormQuotes from "../components/react_components/FormQuotes";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <LayoutDashboard title="RICASA | Crear Cotización">
     <div class="container mx-auto px-4 py-6">
-        <FormQuotes client:load />
+        <FormQuotes apiUrl={apiUrl} client:load />
     </div>
 </LayoutDashboard>

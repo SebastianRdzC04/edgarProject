@@ -2,6 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import LoginForm from '../components/react_components/LoginForm';
 import RegisterForm from '../components/react_components/RegisterForm';
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+console.log('API URL:', apiUrl);
+
 ---
 
 <Layout>
@@ -18,11 +22,11 @@ import RegisterForm from '../components/react_components/RegisterForm';
 			</div>
 
 			<div id="login-form" class="form-panel active">
-				<LoginForm client:load />
+				<LoginForm apiUrl={apiUrl} client:load />
 			</div>
 
 			<div id="register-form" class="form-panel">
-				<RegisterForm client:load />
+				<RegisterForm apiUrl={apiUrl} client:load />
 			</div>
 		</div>
 	</div>

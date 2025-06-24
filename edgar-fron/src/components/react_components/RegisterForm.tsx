@@ -2,7 +2,11 @@
 
 import { useState } from "react"
 
-export default function RegisterForm() {
+type Props = {
+    apiUrl?: string
+}
+
+export default function RegisterForm({ apiUrl }: Props) {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -45,7 +49,7 @@ export default function RegisterForm() {
         setIsLoading(true)
 
         try {
-            const response = await fetch("https://apiedgar.kysedomi.lat/auth/register", {
+            const response = await fetch(`${apiUrl}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

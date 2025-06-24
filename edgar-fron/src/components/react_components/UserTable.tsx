@@ -6,7 +6,10 @@ interface User {
   id: string;
 }
 
-const UserTable: React.FC = () => {
+type Props = {  apiUrl?: string;
+};
+
+const UserTable: React.FC<Props> = ({ apiUrl }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +17,9 @@ const UserTable: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://apiedgar.kysedomi.lat/users/all');
+        const response = await fetch(`${apiUrl}/users/all`, {
+          credentials: 'include',
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch users');
         }

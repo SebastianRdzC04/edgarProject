@@ -9,7 +9,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:4321"  
     ], 
-    allow_credentials=True,
+    allow_credentials=True,  # Permite el uso de cookies y credenciales
     allow_methods=["*"],  # Permite todos los métodos HTTP
     allow_headers=["*"],  # Permite todas las cabeceras
 )

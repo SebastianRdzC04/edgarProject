@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 
-export default function LoginForm() {
+type Props = { apiUrl: string }
+
+export default function LoginForm({ apiUrl }: Props) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -44,7 +46,7 @@ export default function LoginForm() {
         setIsLoading(true)
 
         try {
-            const response = await fetch("https://apiedgar.kysedomi.lat/auth/login", {
+            const response = await fetch(`${apiUrl}/auth/login`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

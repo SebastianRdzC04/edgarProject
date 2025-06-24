@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 
 from ..dependencies.auth_dependency import get_current_user, get_current_user_from_cookie
@@ -29,6 +29,32 @@ def get_current_user_info(current_user: UserWithRol = Depends(get_current_user_f
     Get the current user's information.
     """
     return UserWithRol.model_validate(current_user, from_attributes=True)
+
+
+
+@router.get("/me/role")
+def get_current_user_role(current_user: UserWithRol = Depends(get_current_user_from_cookie),
+                            role_repository: RoleRepository = Depends(get_role_repository)):
+    """
+    Get the current user's role.
+    """
+    role = role_repository.get_role_by_id(current_user.role_id)
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
+    return {"role": role.name, "user": current_user}
+
+@router.post("/convert/me/admin")
+def convert_current_user_to_admin(current_user: UserWithRol = Depends(get_current_user_from_cookie),
+                                  service: UserService = Depends(get_user_service)):
+    """
+    Convert the current user to an admin.
+    """
+    if not current_user.role_id:
+        raise HTTPException(status_code=400, detail="User does not have a role assigned")
+    return service.convert_user_to_admin(current_user.id)
+    
+   
+
 
 @router.post("/", response_model=UserOut)
 def create_user(user: UserCreate, service: UserService = Depends(get_user_service)):

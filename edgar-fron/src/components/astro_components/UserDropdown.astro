@@ -4,117 +4,114 @@ interface Props {
     showDashboard: boolean;
 }
 
+// Default values - will be updated by client-side script
+let isLoggedIn = false;
+let username = 'Usuario';
+let userInitial = 'U';
+
 const { showDashboard = true } = Astro.props;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+
 ---
 
-<!-- Botón de inicio de sesión (visible por defecto) -->
-<div id="login-button" class="block">
+<!-- Botón de inicio de sesión (visible solo cuando no hay sesión) -->
+<div id="login-button" class={isLoggedIn ? 'hidden' : 'block'}>
     <a href="/authenticate" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
         Iniciar Sesión
     </a>
 </div>
 
-<!-- Dropdown de usuario (oculto por defecto) -->
-<div id="user-dropdown" class="relative hidden">
+<!-- Dropdown de usuario (visible solo cuando hay sesión) -->
+<div id="user-dropdown" class={`relative ${isLoggedIn ? 'block' : 'hidden'}`}>
     <button id="dropdown-button" class="flex items-center space-x-2 text-gray-800 hover:text-blue-600 focus:outline-none">
         <span class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
-            <span id="user-initial" class="font-medium text-blue-600">U</span>
+            <span id="user-initial" class="font-medium text-blue-600">{userInitial}</span>
         </span>
-        <span id="username-display" class="font-medium">Usuario</span>
+        <span id="username-display" class="font-medium">{username}</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
     </button>
     <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
-        {showDashboard && (
-            <a href="/home" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                Dashboard
-            </a>
-        )}
+        <a id="dashboard-link" href="/home" class="block px-4 py-2 text-gray-800 hover:bg-blue-50 hidden">
+            Dashboard
+        </a>
         <button id="logout-button" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-50">
             Cerrar sesión
         </button>
     </div>
 </div>
 
-<script>
+<script define:vars={{apiUrl}}>
     // Verificar el estado de autenticación al cargar la página
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
         const loginButton = document.getElementById('login-button');
         const userDropdown = document.getElementById('user-dropdown');
         const dropdownButton = document.getElementById('dropdown-button');
         const dropdownMenu = document.getElementById('dropdown-menu');
-        const usernameDisplay = document.getElementById('username-display');
-        const userInitial = document.getElementById('user-initial');
         const logoutButton = document.getElementById('logout-button');
+        const userInitialElement = document.getElementById('user-initial');
+        const usernameDisplay = document.getElementById('username-display');
+        const dashboardLink = document.getElementById('dashboard-link');
         
-        // Función para decodificar token JWT
-        function decodeJWT(token) {
-            try {
-                const parts = token.split('.');
-                if (parts.length !== 3) {
-                    throw new Error('Invalid token format');
-                }
-                
-                const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-                
-                const currentTime = Math.floor(Date.now() / 1000);
-                if (payload.exp && payload.exp < currentTime) {
-                    localStorage.removeItem('token');
-                    throw new Error('Token expired');
-                }
-                
-                return payload;
-            } catch (error) {
-                console.error('Error decoding JWT:', error);
-                return null;
-            }
-        }
-        
-        // Función para verificar si el usuario está autenticado
-        function checkAuthStatus() {
-            const token = localStorage.getItem('token');
+        // Comprobación de autenticación (movida desde el frontmatter)
+        try {
+            const response = await fetch(`${apiUrl}/users/me`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             
-            if (token) {
-                const decodedToken = decodeJWT(token);
+            console.log('Response status:', response);
+            
+            if (response.ok) {
+                const userData = await response.json();
+                console.log('User data:', userData);
+                const username = userData.username || 'Usuario';
+                const userInitial = username.charAt(0).toUpperCase();
                 
-                if (decodedToken) {
-                    loginButton.classList.add('hidden');
-                    userDropdown.classList.remove('hidden');
+                // Actualizar UI para usuario autenticado
+                if (loginButton) loginButton.classList.add('hidden');
+                if (userDropdown) userDropdown.classList.remove('hidden');
+                if (userInitialElement) userInitialElement.textContent = userInitial;
+                if (usernameDisplay) usernameDisplay.textContent = username;
+                
+                // Verificar el rol del usuario
+                try {
+                    const roleResponse = await fetch(`${apiUrl}/users/me/role`, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
                     
-                    const userData = {
-                        id: decodedToken.id || '',
-                        username: decodedToken.username || 'Usuario',
-                        email: decodedToken.email || '',
-                        role_id: decodedToken.role_id || ''
-                    };
-                    
-                    usernameDisplay.textContent = userData.username;
-                    userInitial.textContent = userData.username.charAt(0).toUpperCase();
-                    
-                    localStorage.setItem('userData', JSON.stringify(userData));
-                } else {
-                    resetAuthState();
+                    if (roleResponse.ok) {
+                        const roleData = await roleResponse.json();
+                        console.log('Role data:', roleData);
+                        
+                        // Mostrar enlace de Dashboard solo si el usuario es admin
+                        if (dashboardLink && roleData.role === "admin") {
+                            dashboardLink.classList.remove('hidden');
+                        }
+                    }
+                } catch (roleError) {
+                    console.error('Error verificando rol:', roleError);
                 }
             } else {
-                resetAuthState();
+                // Actualizar UI para usuario no autenticado
+                if (loginButton) loginButton.classList.remove('hidden');
+                if (userDropdown) userDropdown.classList.add('hidden');
             }
-        }
-        
-        // Reiniciar el estado de autenticación
-        function resetAuthState() {
-            localStorage.removeItem('userData');
-            loginButton.classList.remove('hidden');
-            userDropdown.classList.add('hidden');
-        }
-        
-        // Manejar el cierre de sesión
-        if (logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                localStorage.removeItem('token');
-                resetAuthState();
-                window.location.href = '/'; // Redireccionar al inicio tras cerrar sesión
-            });
+        } catch (error) {
+            console.error('Error verificando autenticación:', error);
+            // Mostrar UI para usuario no autenticado en caso de error
+            if (loginButton) loginButton.classList.remove('hidden');
+            if (userDropdown) userDropdown.classList.add('hidden');
         }
         
         // Manejar el dropdown
@@ -132,7 +129,25 @@ const { showDashboard = true } = Astro.props;
             });
         }
         
-        // Verificar estado de autenticación al cargar
-        checkAuthStatus();
+        // Manejar el cierre de sesión
+        if (logoutButton) {
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`${apiUrl}/auth/logout`, {
+                        method: 'POST',
+                        credentials: 'include',
+                    });
+                    
+                    if (response.ok) {
+                        // Redireccionar a la página principal o recargar para actualizar el estado
+                        window.location.href = '/';
+                    } else {
+                        console.error('Error al cerrar sesión');
+                    }
+                } catch (error) {
+                    console.error('Error al cerrar sesión:', error);
+                }
+            });
+        }
     });
 </script>
