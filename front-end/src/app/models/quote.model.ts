@@ -11,6 +11,15 @@ export interface QuoteCreate {
 
 }
 
+export interface QuoteMaterialBase {
+    id: string;
+    quoteId: string;
+    materialId: string;
+    quantity: number;
+    price: number;
+    material: MaterialBase;
+}
+
 export interface QuoteBase {
     id: string;
     fullName: string;
@@ -21,6 +30,7 @@ export interface QuoteBase {
     createdAt: string;
     updatedAt: string;
     materials?: MaterialBase[];
+    quoteMaterials?: QuoteMaterialBase[];
 }
 
 /*

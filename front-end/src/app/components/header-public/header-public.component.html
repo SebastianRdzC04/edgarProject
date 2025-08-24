@@ -3,11 +3,23 @@
     <a routerLink="/" class="text-2xl md:text-3xl font-bold text-blue-700 tracking-wide hover:text-blue-900 transition duration-200">
       RICASA
     </a>
-    <a
-      routerLink="/auth"
-      class="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition duration-300"
-    >
-      Iniciar sesión
-    </a>
+    @if(isAuth){
+      <a
+        routerLink="/dashboard"
+        class="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition duration-300"
+      >
+        Ir al panel
+      </a>
+    }
+    @else 
+    {
+      <a
+        routerLink="/auth"
+        class="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition duration-300"
+      >
+        Iniciar sesión
+      </a>
+
+    }
   </div>
 </header>

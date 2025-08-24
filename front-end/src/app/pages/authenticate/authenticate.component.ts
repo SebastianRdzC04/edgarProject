@@ -68,9 +68,12 @@ export class AuthenticateComponent {
       password: password!
     };
     this.authService.login(loginData).subscribe({
-      next: () => {
+      next: (response) => {
+        localStorage.setItem('token', response.data.token.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
         this.loading = false;
         this.router.navigate(['/']);
+
       },
       error: () => {
         this.loading = false;

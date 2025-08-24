@@ -14,6 +14,8 @@ export class QuoteServiceService {
     return this.http.post<QuoteResponse>(`${environment.apiUrl}/quotes`, quote);
   }
 
+
+
   getQuote(id: string): Observable<QuoteResponse> {
     return this.http.get<QuoteResponse>(`${environment.apiUrl}/quotes/${id}`);
   }
