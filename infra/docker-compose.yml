@@ -1,0 +1,43 @@
+services:
+  edgar-database:
+    image: postgres:15
+    container_name: edgar_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: db-ricasa
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5501:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - edgar_network
+
+  edgar-backend:
+    build:
+      context: ../back_end
+      dockerfile: Dockerfile
+    container_name: backend-edgar
+    restart: unless-stopped
+    env_file:
+      - ../back_end/.env.prod
+    ports:
+      - "5502:3333"
+    networks:
+      - edgar_network
+
+  edgar-frontend:
+    build:
+      context: ../front-end
+      dockerfile: Dockerfile
+    container_name: frontend-edgar
+    restart: unless-stopped
+    ports:
+      - "5503:80"
+    networks:
+      - edgar_network
+
+networks:
+  edgar_network:
+    driver: bridge

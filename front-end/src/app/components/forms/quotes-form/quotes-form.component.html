@@ -1,0 +1,114 @@
+<!-- Modal form container (diseño similar al index, listo para ser usado dentro de un modal) -->
+<div class="p-6 shadow-xl w-full">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
+      Solicitar <span class="text-blue-600">cotización</span>
+    </h2>
+  </div>
+
+  <form  class="space-y-4">
+    <!-- Nombre completo -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+      <input
+        [formControl]="fullName"
+        type="text"
+        placeholder="Tu nombre completo"
+        class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-600 bg-white text-gray-800"
+      />
+    </div>
+
+    <!-- Teléfono -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono / contacto</label>
+      <input
+        [formControl]="phoneContact"
+        type="tel"
+        placeholder="(871) 123-4567"
+        class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-100 focus:border-green-500 bg-white text-gray-800"
+      />
+    </div>
+
+    <!-- Título -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Título del proyecto</label>
+      <input
+        [formControl]="title"
+        type="text"
+        placeholder="Ej. Patio, losa, zapata..."
+        class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-600 bg-white text-gray-800"
+      />
+    </div>
+
+    <!-- Dirección -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Dirección / ubicación</label>
+      <input
+        [formControl]="address"
+        type="text"
+        placeholder="Av. Principal #1234, Col. Centro"
+        class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-100 focus:border-yellow-500 bg-white text-gray-800"
+      />
+    </div>
+
+    <!-- Lista de materiales (select) -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Selecciona materiales</label>
+      <select 
+        #materialSelect
+        (change)="addMaterial(materialSelect.value); materialSelect.value=''"
+        class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-600 bg-white text-gray-800"
+      >
+        <option value="" disabled selected>Selecciona los materiales que necesitas</option>
+        <option *ngFor="let material of materials" [value]="material.id" [disabled]="isSelected(material.id)">
+          {{ material.name }}
+        </option>
+      </select>
+      <p class="text-xs text-gray-500 mt-1">Selecciona todos los materiales que necesitas para tu proyecto.</p>
+    </div>
+
+    <!-- Descripción / texto -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Descripción del proyecto</label>
+      <textarea
+        [formControl]="text"
+        rows="4"
+        placeholder="Describe aquí los detalles: medidas, volumen estimado, plazos..."
+        class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-600 bg-white text-gray-800 resize-y"
+      ></textarea>
+    </div>
+
+    <!-- Materiales seleccionados -->
+    <div *ngIf="selectedMaterials.length > 0">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Materiales seleccionados</label>
+      <div class="flex flex-wrap gap-2">
+        <div 
+          *ngFor="let materialId of selectedMaterials" 
+          class="flex items-center bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg"
+        >
+          <span>{{ getMaterialName(materialId) }}</span>
+          <button 
+            type="button" 
+            (click)="removeMaterial(materialId)" 
+            class="ml-2 text-gray-500 hover:text-red-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="flex flex-wrap gap-3 justify-end mt-4">
+      <button type="button" class="px-5 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition duration-200">
+        Cancelar
+      </button>
+      <button type="button" (click)="onSubmit()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 shadow">
+        Enviar cotización
+      </button>
+    </div>
+  </form>
+</div>
+

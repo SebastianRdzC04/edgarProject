@@ -1,0 +1,9 @@
+<app-header-dashboard></app-header-dashboard>
+<div class="flex h-[calc(100vh-64px)]"> <!-- Ajusta 64px según la altura real del header -->
+  <div class="w-1/5 min-w-[200px] max-w-[300px]">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="flex-grow overflow-auto">
+    <ng-content></ng-content>
+  </div>
+</div>

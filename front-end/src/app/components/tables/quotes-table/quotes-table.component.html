@@ -1,0 +1,46 @@
+<section class="py-12 bg-[#faf9f5] mx-auto">
+  <div class="container mx-auto px-6 lg:px-12">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8">
+      Cotizaciones <span class="text-blue-600">recientes</span>
+    </h2>
+    <div class="overflow-x-auto mx-auto">
+      <table class="min-w-full bg-white rounded-xl shadow-lg">
+        <thead>
+          <tr class="bg-blue-50">
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Nombre</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Teléfono</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Título</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Descripción</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Dirección</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Fecha</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let quote of quotes" class="hover:bg-blue-100 transition duration-200">
+            <td class="px-6 py-4 text-gray-800 font-medium">{{ quote.fullName }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ quote.phoneContact }}</td>
+            <td class="px-6 py-4 text-gray-800">{{ quote.title }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ quote.text }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ quote.address }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ quote.createdAt | date:'short' }}</td>
+            <td class="px-6 py-4 flex gap-2 h-full items-center justify-center">
+              <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow transition duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6.293-6.293a1 1 0 011.414 0l1.586 1.586a1 1 0 010 1.414L11 17H7v-4z" />
+                </svg>
+                Editar
+              </button>
+              <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow transition duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
