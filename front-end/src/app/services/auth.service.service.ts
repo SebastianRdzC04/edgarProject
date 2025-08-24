@@ -20,12 +20,12 @@ export class AuthServiceService {
   private http = inject(HttpClient);
 
   login(data: LoginCredentials): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/login`, data);
+    return this.http.post(`${this.apiUrl}/login`, data);
   }
 
 
   register(data: registerModel): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/register`, data);
+    return this.http.post(`${this.apiUrl}/register`, data);
   }
 
 }
