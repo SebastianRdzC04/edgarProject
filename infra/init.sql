@@ -135,27 +135,27 @@ INSERT INTO materials (name, description) VALUES
 ('Lámina', 'Lámina galvanizada acanalada');
 
 -- Insertando cotizaciones
-INSERT INTO quotes (user_id, title, text, address, status, price) VALUES
-((SELECT id FROM users WHERE email = 'usuario1@example.com'), 'Remodelación cocina', 'Necesito remodelar mi cocina completamente, incluyendo gabinetes, piso y plomería', 'Av. Principal 123, Colonia Centro', 'pendiente', 0),
-((SELECT id FROM users WHERE email = 'usuario2@example.com'), 'Construcción de muro', 'Muro perimetral de 20 metros de largo por 2.5 metros de altura', 'Calle 45 #890, Residencial Las Palmas', 'cotizada', 45000),
-((SELECT id FROM users WHERE email = 'usuario3@example.com'), 'Instalación eléctrica', 'Instalación eléctrica para casa nueva de 120m²', 'Av. Los Pinos 567, Fracc. Los Álamos', 'pagada', 28000),
-((SELECT id FROM users WHERE email = 'usuario4@example.com'), 'Pintura exterior', 'Pintar fachada de casa de dos pisos', 'Blvd. Las Torres 782, Col. Moderna', 'pendiente', 0),
-((SELECT id FROM users WHERE email = 'usuario5@example.com'), 'Impermeabilización', 'Impermeabilizar azotea de 80m²', 'Privada Magnolias 45, Jardines del Sur', 'rechazada', 12000),
-((SELECT id FROM users WHERE email = 'usuario6@example.com'), 'Construcción de baño', 'Construcción de baño completo, incluye plomería y acabados', 'Calle Robles 123, Fracc. Las Arboledas', 'cotizada', 38000),
-((SELECT id FROM users WHERE email = 'usuario7@example.com'), 'Instalación de piso', 'Instalación de 60m² de piso cerámico', 'Av. Central 456, Unidad Habitacional El Mirador', 'pagada', 15000),
-((SELECT id FROM users WHERE email = 'usuario8@example.com'), 'Construcción de cochera', 'Cochera para dos autos con techo de lámina', 'Calle 67 #321, Col. Reforma', 'cancelada', 32000),
-((SELECT id FROM users WHERE email = 'usuario9@example.com'), 'Remodelación sala', 'Remodelación completa de sala, incluye pisos y acabados', 'Blvd. Principal 890, Residencial El Bosque', 'pendiente', 0),
-((SELECT id FROM users WHERE email = 'usuario10@example.com'), 'Instalación de ventanas', 'Instalación de 8 ventanas de aluminio', 'Av. Las Flores 234, Fracc. Jardines', 'cotizada', 24000),
-((SELECT id FROM users WHERE email = 'usuario11@example.com'), 'Construcción de escalera', 'Escalera de concreto para segundo piso', 'Calle Industrial 567, Col. Trabajadores', 'pagada', 18000),
-((SELECT id FROM users WHERE email = 'usuario12@example.com'), 'Instalación de cisterna', 'Cisterna de 5000 litros con sistema de bombeo', 'Privada Los Pinos 789, Residencial Las Cumbres', 'pendiente', 0),
-((SELECT id FROM users WHERE email = 'usuario13@example.com'), 'Renovación de fachada', 'Renovación completa de fachada de casa estilo colonial', 'Av. Constitución 123, Centro Histórico', 'cotizada', 56000),
-((SELECT id FROM users WHERE email = 'usuario14@example.com'), 'Construcción de pergolado', 'Pergolado de madera tratada para jardín', 'Calle Jacarandas 456, Fracc. Las Flores', 'pagada', 14500),
-((SELECT id FROM users WHERE email = 'usuario15@example.com'), 'Instalación de drenaje', 'Sistema de drenaje para casa nueva', 'Blvd. Las Américas 789, Col. Moderna', 'rechazada', 22000),
-((SELECT id FROM users WHERE email = 'usuario16@example.com'), 'Remodelación oficina', 'Remodelación de oficina de 50m²', 'Av. Reforma 234, Zona Financiera', 'pendiente', 0),
-((SELECT id FROM users WHERE email = 'usuario17@example.com'), 'Construcción de barda', 'Barda perimetral de 30 metros lineales', 'Calle Nogal 567, Fracc. Árboles', 'cotizada', 35000),
-((SELECT id FROM users WHERE email = 'usuario18@example.com'), 'Instalación de techo', 'Techo de lámina para área de 40m²', 'Privada Girasoles 890, Col. Jardín', 'pagada', 19500),
-((SELECT id FROM users WHERE email = 'usuario19@example.com'), 'Construcción de alberca', 'Alberca de 6x3 metros con sistema de filtración', 'Av. Del Sol 123, Residencial Las Palmas', 'cotizada', 85000),
-((SELECT id FROM users WHERE email = 'admin@gmail.com'), 'Proyecto de demostración', 'Proyecto completo para mostrar funcionalidades del sistema', 'Oficina Central, Av. Principal 1000', 'pendiente', 0);
+INSERT INTO quotes (user_id, full_name, phone_contact, title, text, address, status, price) VALUES
+((SELECT id FROM users WHERE email = 'usuario1@example.com'), 'usuario1', '555-0001', 'Remodelación cocina', 'Necesito remodelar mi cocina completamente, incluyendo gabinetes, piso y plomería', 'Av. Principal 123, Colonia Centro', 'pendiente', 0),
+((SELECT id FROM users WHERE email = 'usuario2@example.com'), 'usuario2', '555-0002', 'Construcción de muro', 'Muro perimetral de 20 metros de largo por 2.5 metros de altura', 'Calle 45 #890, Residencial Las Palmas', 'cotizada', 45000),
+((SELECT id FROM users WHERE email = 'usuario3@example.com'), 'usuario3', '555-0003', 'Instalación eléctrica', 'Instalación eléctrica para casa nueva de 120m²', 'Av. Los Pinos 567, Fracc. Los Álamos', 'pagada', 28000),
+((SELECT id FROM users WHERE email = 'usuario4@example.com'), 'usuario4', '555-0004', 'Pintura exterior', 'Pintar fachada de casa de dos pisos', 'Blvd. Las Torres 782, Col. Moderna', 'pendiente', 0),
+((SELECT id FROM users WHERE email = 'usuario5@example.com'), 'usuario5', '555-0005', 'Impermeabilización', 'Impermeabilizar azotea de 80m²', 'Privada Magnolias 45, Jardines del Sur', 'rechazada', 12000),
+((SELECT id FROM users WHERE email = 'usuario6@example.com'), 'usuario6', '555-0006', 'Construcción de baño', 'Construcción de baño completo, incluye plomería y acabados', 'Calle Robles 123, Fracc. Las Arboledas', 'cotizada', 38000),
+((SELECT id FROM users WHERE email = 'usuario7@example.com'), 'usuario7', '555-0007', 'Instalación de piso', 'Instalación de 60m² de piso cerámico', 'Av. Central 456, Unidad Habitacional El Mirador', 'pagada', 15000),
+((SELECT id FROM users WHERE email = 'usuario8@example.com'), 'usuario8', '555-0008', 'Construcción de cochera', 'Cochera para dos autos con techo de lámina', 'Calle 67 #321, Col. Reforma', 'cancelada', 32000),
+((SELECT id FROM users WHERE email = 'usuario9@example.com'), 'usuario9', '555-0009', 'Remodelación sala', 'Remodelación completa de sala, incluye pisos y acabados', 'Blvd. Principal 890, Residencial El Bosque', 'pendiente', 0),
+((SELECT id FROM users WHERE email = 'usuario10@example.com'), 'usuario10', '555-0010', 'Instalación de ventanas', 'Instalación de 8 ventanas de aluminio', 'Av. Las Flores 234, Fracc. Jardines', 'cotizada', 24000),
+((SELECT id FROM users WHERE email = 'usuario11@example.com'), 'usuario11', '555-0011', 'Construcción de escalera', 'Escalera de concreto para segundo piso', 'Calle Industrial 567, Col. Trabajadores', 'pagada', 18000),
+((SELECT id FROM users WHERE email = 'usuario12@example.com'), 'usuario12', '555-0012', 'Instalación de cisterna', 'Cisterna de 5000 litros con sistema de bombeo', 'Privada Los Pinos 789, Residencial Las Cumbres', 'pendiente', 0),
+((SELECT id FROM users WHERE email = 'usuario13@example.com'), 'usuario13', '555-0013', 'Renovación de fachada', 'Renovación completa de fachada de casa estilo colonial', 'Av. Constitución 123, Centro Histórico', 'cotizada', 56000),
+((SELECT id FROM users WHERE email = 'usuario14@example.com'), 'usuario14', '555-0014', 'Construcción de pergolado', 'Pergolado de madera tratada para jardín', 'Calle Jacarandas 456, Fracc. Las Flores', 'pagada', 14500),
+((SELECT id FROM users WHERE email = 'usuario15@example.com'), 'usuario15', '555-0015', 'Instalación de drenaje', 'Sistema de drenaje para casa nueva', 'Blvd. Las Américas 789, Col. Moderna', 'rechazada', 22000),
+((SELECT id FROM users WHERE email = 'usuario16@example.com'), 'usuario16', '555-0016', 'Remodelación oficina', 'Remodelación de oficina de 50m²', 'Av. Reforma 234, Zona Financiera', 'pendiente', 0),
+((SELECT id FROM users WHERE email = 'usuario17@example.com'), 'usuario17', '555-0017', 'Construcción de barda', 'Barda perimetral de 30 metros lineales', 'Calle Nogal 567, Fracc. Árboles', 'cotizada', 35000),
+((SELECT id FROM users WHERE email = 'usuario18@example.com'), 'usuario18', '555-0018', 'Instalación de techo', 'Techo de lámina para área de 40m²', 'Privada Girasoles 890, Col. Jardín', 'pagada', 19500),
+((SELECT id FROM users WHERE email = 'usuario19@example.com'), 'usuario19', '555-0019', 'Construcción de alberca', 'Alberca de 6x3 metros con sistema de filtración', 'Av. Del Sol 123, Residencial Las Palmas', 'cotizada', 85000),
+((SELECT id FROM users WHERE email = 'admin@gmail.com'), 'admin', '555-9999', 'Proyecto de demostración', 'Proyecto completo para mostrar funcionalidades del sistema', 'Oficina Central, Av. Principal 1000', 'pendiente', 0);
 
 -- Insertando materiales para las cotizaciones
 -- Cotización 1 (pendiente)

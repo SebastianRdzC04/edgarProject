@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Quote from '#models/quote'
 import Material from '#models/material'
 import QuoteMaterial from '#models/quote_material'
-import { quoteValidator } from '#validators/quote'
+import { quoteValidator, updateQuoteMaterialValidator, updateQuoteValidator } from '#validators/quote'
 
 export default class QuotesController {
     
@@ -105,36 +105,16 @@ export default class QuotesController {
     }
 
     async update ({ params, request, response }: HttpContext) {
-        const payload = await quoteValidator.validate(request.all())
-        const materialsIds = payload.materialsList ? payload.materialsList : []
+        const quoteId = params.id
 
-        // verify if the materials list exist in database
-        const materials = await Material.query().whereIn('id', materialsIds)
-        if (materials.length === 0 && materialsIds.length > 0) {
-            return response.badRequest({
-                message: 'Invalid materials list'
-            })
-        }
+        const payload = await updateQuoteValidator.validate(request.all())
 
-        const quote = await Quote.findOrFail(params.id)
+
+        const quote = await Quote.findOrFail(quoteId)
         quote.merge({
-            fullName: payload.fullName,
-            phoneContact: payload.phoneContact,
-            title: payload.title,
-            text: payload.text,
-            address: payload.address,
+            price: payload.price,
         })
-
         await quote.save()
-
-        // Update materials
-        await QuoteMaterial.query().where('quoteId', quote.id).delete()
-        await Promise.all(materials.map(material => {
-            return QuoteMaterial.create({
-                quoteId: quote.id,
-                materialId: material.id,
-            })
-        }))
 
         return response.ok({
             message: 'Quote updated successfully',
@@ -145,32 +125,21 @@ export default class QuotesController {
     }
 
     async updateQuoteMaterial ({ params, request, response }: HttpContext) {
-        const payload = await quoteValidator.validate(request.all())
-        const materialsIds = payload.materialsList ? payload.materialsList : []
+        const quoteMaterialId = params.id
+        const payload = await updateQuoteMaterialValidator.validate(request.all())
+        const quoteMaterial = await QuoteMaterial.findOrFail(quoteMaterialId)
 
-        // verify if the materials list exist in database
-        const materials = await Material.query().whereIn('id', materialsIds)
-        if (materials.length === 0 && materialsIds.length > 0) {
-            return response.badRequest({
-                message: 'Invalid materials list'
-            })
-        }
+        quoteMaterial.merge({
+            quantity: payload.quantity,
+            price: payload.price
+        })
 
-        const quote = await Quote.findOrFail(params.id)
-
-        // Update materials
-        await QuoteMaterial.query().where('quoteId', quote.id).delete()
-        await Promise.all(materials.map(material => {
-            return QuoteMaterial.create({
-                quoteId: quote.id,
-                materialId: material.id,
-            })
-        }))
+        await quoteMaterial.save()
 
         return response.ok({
             message: 'Quote materials updated successfully',
             data: {
-                quote: quote
+                quote: quoteMaterial
             }
         })
     }
